@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>绿色食品数字档案管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <style>
+      .layui-disabled,.layui-disabled:hover {
+        color: black !important;
+        cursor: not-allowed !important
+      }
+  </style>
+  <body>
+    <div class="x-body">
+        <form class="layui-form" lay-filter="example">
+          <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>基本信息</legend>
+          </fieldset>
+          <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">企业ID</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="UserId" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">企业名称</label>
+                <div class="layui-input-inline">
+                  <input type="text" style="width: 230px" name="CompanyName" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">商标</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Brand" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">省级绿办</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="ProvinceLvban" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">省份</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Province" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">市</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="City" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">县</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="County" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <!-- <div class="layui-inline">
+                <label class="layui-form-label">档案编号</label>
+                <div class="layui-input-inline">
+                  <input type="tel" name="Original" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div> -->
+              <div class="layui-inline">
+                <label class="layui-form-label">初次/续展</label>
+                <div class="layui-input-inline">
+                  <select name="IsFirst" lay-filter="aihao" disabled>
+                    <option value=""></option>
+                    <option value="1">初次</option>
+                    <option value="0">续展</option>
+                  </select>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">营业执照注册号</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="RegistrationNo" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">首次获证时间</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="FirstAwardDate" id="FirstAwardDate" lay-verify="required|date" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">页数</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="PageNum" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Remark" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">档案编号</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="OnlyNum" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Type" lay-verify="required|text" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">申报主体类型</label>
+                <div class="layui-input-inline">
+                  <select name="ShenBaoType" lay-filter="aihao" id="declareSubject" disabled>
+                    <option value=""></option>
+                    <option value="合作社">合作社</option>
+                    <option value="龙头企业">龙头企业</option>
+                    <option value="军队">军队</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </div>
+              </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">企业地址</label>
+            <div class="layui-input-block">
+              <input type="text" name="Address" lay-verify="title" autocomplete="off" placeholder="请输入联系地址" class="layui-input" disabled><br/>
+              
+            </div>
+          </div>
+
+          <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>产品信息</legend>
+          </fieldset>
+          
+          <div id="productList">
+              <!-- <div class="layui-form-item"> 
+                  <div class="layui-inline">
+                    <label class="layui-form-label">产品名称</label>
+                    <div class="layui-input-inline">
+                      <input type="text" name="email" lay-verify="required|text" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-inline">
+                    <label class="layui-form-label">产品类别</label>
+                    <div class="layui-input-inline">
+                      <div class="layui-input-inline">
+                        <select name="nuin" class="category">
+                          <option value="">产品类别</option>
+                          <option value="1">环境检测机构名称</option>
+                          <option value="2">产品检测机构名称</option>
+                          <option value="3">地方工作机构名称</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+              </div> -->
+          </div>
+          
+          <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>查看PDF</legend>
+          </fieldset>
+
+          <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">1.基本材料</label>
+                <div class="layui-input-block">
+                  <div class="layui-inline layui-word-aux " id="basicMaterials" style="margin-top: 10px;">
+                  </div>
+                </div>
+              </div>
+          </div>
+          
+
+          <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+          </fieldset>
+
+          
+        </form>
+    </div>
+    <script src="common/server.js"></script>
+    <script src="common/common.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script>
+
+        //console.log( getUrlParam('id') );
+        var ID = getUrlParam('id');   //获取地址栏参数
+        
+        var details = sendAjax(Server.service.GetArchivesInfoByID, {'ID': ID})
+        console.log('@@@@@@@@@@@', details);
+        let pdfUrl1 = encodeURI(encodeURI('/pdfjs/web/viewer.html?url=' + details.BasicFile));
+
+        let pdfName = details.BasicFile.split('/');
+        console.log(pdfName);
+        let eleText1 = `<a href="${pdfUrl1}" onclick="examinePDF(${details.Catalogue})" target="_blank" style="color: blue;" >${pdfName[pdfName.length-1]}</a>`;
+        
+        $("#basicMaterials").html(eleText1);
+
+        //获取申报主体
+        let declareSubject = sendAjax(Server.service.GetCondition, {"Type": 6} );
+        let declareSubjectEle = '<option value="">请选择</option>';
+        for(let i=0; i<declareSubject.length; i++) {
+            declareSubjectEle += `
+                <option value="${declareSubject[i].ShenBaoType}">${declareSubject[i].ShenBaoType}</option>
+            `
+        }
+        $('#declareSubject').html(declareSubjectEle);
+
+
+        layui.use(['form','layer','upload', 'laydate'], function(){
+            $ = layui.jquery;
+            var form = layui.form,
+            layer = layui.layer,
+            upload = layui.upload;
+            laydate = layui.laydate;
+
+            //申请日期
+            laydate.render({     
+              elem: '#ApplicationDate'
+            });
+            laydate.render({
+              elem: '#AcceptanceDate'
+            });
+            laydate.render({
+              elem: '#AwardDate'
+            });
+            laydate.render({
+              elem: '#FirstAwardDate'
+            });
+
+            //console.log('初始赋值', details);
+            form.val('example', details);   //表单初始赋值
+
+            if(details) {
+
+
+                var productList = JSON.parse( details.Product );
+                var productListContent = '';
+                for(var i=0; i<productList.length; i++) {
+                    productListContent += `
+                        <div class="layui-form-item"> 
+                          <div class="layui-inline">
+                            <label class="layui-form-label">产品名称</label>
+                            <div class="layui-input-inline">
+                              <input type="text" value="${productList[i].Name}" lay-verify="required|text" autocomplete="off" class="layui-input int" disabled>
+                            </div>
+                          </div>
+                          <div class="layui-inline">
+                            <label class="layui-form-label">产品类别</label>
+                            <div class="layui-input-inline">
+                              <div class="layui-input-inline">
+                                <select class="category" disabled>
+                                    
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="layui-inline">
+                            <label class="layui-form-label">产品产量</label>
+                            <div class="layui-input-inline">
+                              <input type="text" value="${productList[i].Output}" lay-verify="required|text" autocomplete="off" class="layui-input int" disabled>
+                            </div>
+                          </div>
+                          <div class="layui-inline">
+                            <label class="layui-form-label">种养殖面积</label>
+                            <div class="layui-input-inline">
+                              <input type="text" value="${productList[i].Area}" lay-verify="required|text" autocomplete="off" class="layui-input area" disabled>
+                            </div>
+                          </div>
+                      </div>
+                    `
+                }
+                $('#productList').html(productListContent);
+
+                //获取产品类型
+                var productType = sendAjax(Server.service.GetClassifyList, {"Type": 0} );
+                var productTypeEle = '<option value=""></option>';
+                for(var i=0; i<productType.length; i++) {
+                    //console.log(productType[i].id);
+                    productTypeEle += `
+                        <option value="${productType[i].id}">${productType[i].name}</option>
+                    `
+                }
+                $('.category').html(productTypeEle);
+                //回填产品类型
+                $('#productList').find('select').each(function(i) {
+                    $(this).val(productList[i].ClassifyId);
+                })  
+
+                form.render();
+
+                
+            }
+
+          
+            
+        });
+
+
+
+    </script>
+    
+  </body>
+
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>绿色食品数字档案管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+      xblock div{ padding: 5px;  }
+      xblock div ul{ list-style: none; display: inline-block; }
+      xblock div ul li{ float: left; padding: 0 10px; }
+      xblock div ul li a{ color: blue }
+      .searchContent .layui-form-item{ margin-bottom: 0  }
+    </style>
+  </head>
+  
+  <body>
+   
+    
+        <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a>
+              <cite>鉴定档案</cite></a>
+          </span>
+          <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh-1" style="line-height:30px"></i></a>
+        </div>
+        <div class="x-body">
+          <div class="layui-row" id="search">
+            <form class="layui-form layui-col-md12 x-so" lay-filter="fullText" style="text-align: left;">
+                <input name="FullText" placeholder="请输入全文关键字检索" onkeyup="value=value.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5\.]/g, '')" class="layui-input" style="margin-left: 1%;width: 70%">
+                <button class="layui-btn" title="检索" lay-submit="" lay-filter="fullTextSreach"><i class="layui-icon">&#xe615;</i></button>
+            </form>
+          </div>
+
+          <div class="layui-row" id="search">
+            <form class="layui-form layui-col-md12 x-so" lay-filter="example" style="text-align: left; margin-bottom: 0px">
+              <input class="layui-input" placeholder="请输入档案编号" name="Original" style="margin-left: 1%">
+              <input class="layui-input" placeholder="请输入市" name="City">
+              <input class="layui-input" placeholder="请输入县" name="County">
+              <input class="layui-input" placeholder="请输入企业名称" name="CompanyName" >
+              <input type="text" name="ProductName"  placeholder="请输入产品" autocomplete="off" class="layui-input">
+              <div class="layui-input-inline">
+                <select name="IsFirst">
+                  <option value="">请选择初次/续展</option>
+                  <option value="1">初次</option>
+                  <option value="0">续展</option>
+                </select>
+              </div>
+              <button class="layui-btn" title="检索" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+              <button class="layui-btn" title="全部" ><i class="layui-icon" href="javascript:location.replace(location.href);">&#xe63c;</i></button><br/>
+              <div class="layui-form-mid " style="margin-left: 1%; color: red">注：需精确检索请加双引号,多个检索请用逗号隔开。</div>
+            </form>
+            <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button> -->
+            <!-- <button class="layui-btn" onclick="x_admin_show('添加','./member-add.html',1500,800)"><i class="layui-icon"></i>添加</button> -->
+          </div>
+
+          <div class="layui-form searchContent" action="" id="checkboxArea">
+              <div class="layui-form-item" pane="">
+                <label class="layui-form-label">产品类型：</label>
+                <div class="layui-input-block" id="productType">
+                  <input type="checkbox" name="ClassifyId" lay-skin="primary" title="禽畜产品">
+                </div>
+              </div>
+              <div class="layui-form-item" pane="">
+                <label class="layui-form-label">获证年份：</label>
+                <div class="layui-input-block" id="ApplicationYear">
+                  <input type="checkbox" name="ApplicationYear" lay-skin="primary" title="2017">
+                </div>
+              </div>
+              <!-- <div class="layui-form-item" pane="">
+                <label class="layui-form-label">获证年份：</label>
+                <div class="layui-input-block" id="obtainedYear">
+                  <input type="checkbox" name="AwardYear" lay-skin="primary" title="2017">
+                </div>
+              </div> -->
+          </div>
+
+          <p style="margin-bottom: 10px;text-align: right;padding-right: 20px; font-size: 14px">合计：<span id="count" style="font-size: 14px"></span>条</p>
+          <table class="layui-hide" id="test" lay-filter="test" style="margin-top: 30px"></table>
+        </div>
+   
+    <script src="common/server.js"></script>
+    <script src="common/common.js"></script>
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <!-- <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+            <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+            <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button> -->
+            <button class="layui-btn layui-btn-sm" lay-event="batchDisclosure">批量公开</button>
+            <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="batchVerification">批量核销</button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="batchDel">批量删除</button>
+        </div>
+    </script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="details">详情</a>
+        <a class="layui-btn layui-btn-xs" lay-event="disclosure">是否公开</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="verification">核销</a>
+    </script>
+
+    <script>
+
+        //获取产品类型
+        let productType = sendAjax(Server.service.GetClassifyList, {"Type": 0} );
+        let productTypeEle = '';
+        for(let i=0; i<productType.length; i++) {
+            productTypeEle += `
+                <input type="checkbox" name="${productType[i].id}" lay-skin="primary" title="${productType[i].name}">
+            `
+        }
+        $('#productType').html(productTypeEle);
+
+        //获取获证年份
+        let ApplicationYear = sendAjax(Server.service.GetCondition, {"Type": 2} );
+        let ApplicationYearEle = '';
+        for(let i=0; i<ApplicationYear.length; i++) {
+            ApplicationYearEle += `
+                <input type="checkbox" name="${ApplicationYear[i].AwardYear}" lay-skin="primary" title="${ApplicationYear[i].AwardYear}">
+            `
+        }
+        $('#ApplicationYear').html(ApplicationYearEle);
+
+       
+
+        //获取档案列表
+        let Indexes;
+        let searchData = {'State': 3};
+        Indexes = sendAjax(Server.service.GetAllArchives, {"draw": 2, 'start': 0, 'length': 100000, 'retrievalInfo': JSON.stringify({'State': 3}) } );
+        $('#count').html(Indexes.recordsTotal);
+        let search = '';   //搜索栏获取的最终数据
+        //console.log(Indexes);
+        //creact(Indexes)  //生成折叠面板
+        let checkboxList = {};
+
+        layui.use(['table', 'form', 'laypage', 'laydate'], function(){
+          let form = layui.form;
+          let laypage = layui.laypage;
+          let table = layui.table;
+          //数据表格
+          table.render({
+            elem: '#test',
+            toolbar: '#toolbarDemo',
+            title: '用户数据表',
+            cols: [[
+              {type: 'checkbox', fixed: 'left'},
+              {field:'CompanyName', title:'企业名称', fixed: 'left', sort: true},
+              {field:'RegistrationNo', title:'营业执照' },
+              {field:'Address', title:'地址', sort: true},
+              {field:'ProductName', title:'产品'},
+              {fixed: 'right', title:'操作',  width:240, templet: function(res) {  //toolbar: '#barDemo',
+                  //console.log(res);
+                  let editEle = '';
+                  if(res.IsOpen == 1) {
+                      editEle = `
+                          <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="details">详情</a>
+                          <a class="layui-btn layui-btn-xs" lay-event="noDisclosure">不公开</a>
+                      `
+                      if(res.State == 1) {
+                          editEle += `<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="verification">核销</a>`
+                      } else if(res.State == 0) {
+                          editEle += `<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="noVerification">取消核销</a>`
+                      }
+                         
+                      
+                  } else if(res.IsOpen == 0) {
+                      editEle = `
+                          <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="details">详情</a>
+                          <a class="layui-btn layui-btn-xs" lay-event="disclosure">公开</a>
+                      `
+                      if(res.State == 1) {
+                          editEle += `<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="verification">核销</a>`
+                      } else if(res.State == 0) {
+                          editEle += `<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="noVerification">取消核销</a>`
+                      }
+                      
+                  }
+                  editEle += `<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>`
+                  return editEle;
+              }}
+            ]],
+            id: 'reload',
+            data: JSON.parse(Indexes.data),
+            page: true
+          });
+          //头工具栏事件
+          table.on('toolbar(test)', function(obj){
+            let checkStatus = table.checkStatus(obj.config.id);
+            let selectData = checkStatus.data;  //勾选行数据
+            let dataID = '';
+            for(let i=0; i<selectData.length; i++) {
+                dataID += selectData[i].ID + ','
+            }
+            dataID = dataID.slice(0,dataID.length-1);
+            //console.log(dataID)
+
+            switch(obj.event){
+              case 'batchDisclosure':    //批量公开
+                  if(selectData.length == 0) {
+                      layer.msg('请勾选行');
+                      return;
+                  } else{
+                      layer.confirm('真的要公开么', function(index){
+                          sendAjax1(Server.service.Operation, {
+                              'Type': 1,
+                              'id': dataID,
+                              'value': 1
+                          }, 
+                          function(data) {
+                              if(data.success == 1) {
+                                  layer.close(index);
+                                  layer.msg(data.message);
+                                  Indexes = sendAjax(Server.service.GetAllArchives, {
+                                      'draw': 0,
+                                      'start': 0,
+                                      'length': 10000,
+                                      'retrievalInfo': JSON.stringify(searchData)
+                                  })
+                                  table.reload('reload', {
+                                      data: JSON.parse(Indexes.data)
+                                  })
+                              }
+                          })
+                      });
+                  }
+              break;
+              case 'batchVerification':   //批量核销
+                  if(selectData.length == 0) {
+                      layer.msg('请勾选行');
+                      return;
+                  } else{
+                      layer.confirm('真的要核销么', function(index){
+                          sendAjax1(Server.service.Operation, {
+                              'Type': 2,
+                              'id': dataID,
+                              'value': 0
+                          }, 
+                          function(data) {
+                              if(data.success == 1) {
+                                  layer.close(index);
+                                  layer.msg(data.message);
+                                  Indexes = sendAjax(Server.service.GetAllArchives, {
+                                      'draw': 0,
+                                      'start': 0,
+                                      'length': 10000,
+                                      'retrievalInfo': JSON.stringify(searchData)
+                                  })
+                                  table.reload('reload', {
+                                      data: JSON.parse(Indexes.data)
+                                  })
+                              }
+                          })
+                      });
+                  }  
+              break;
+              case 'batchDel':  //批量删除
+                  //console.log(selectData.length);
+                  if(selectData.length == 0) {
+                      layer.msg('请勾选行');
+                      return;
+                  } else{
+                      layer.confirm('真的要删除么', function(index){
+                          sendAjax1(Server.service.Operation, {
+                              'Type': 0,
+                              'id': dataID,
+                              'value': 0
+                          }, 
+                          function(data) {
+                              if(data.success == 1) {
+                                  layer.msg(data.message);
+                                  //obj.del();
+                                  layer.close(index);
+
+                                  Indexes = sendAjax(Server.service.GetAllArchives, {
+                                      'draw': 0,
+                                      'start': 0,
+                                      'length': 10000,
+                                      'retrievalInfo': JSON.stringify(searchData)
+                                  })
+                                  table.reload('reload', {
+                                      data: JSON.parse(Indexes.data)
+                                  })
+                                  
+                              } else {
+                                  layer.msg('删除失败');
+                              }
+                          })
+                      });
+                  }
+              break;
+            };
+          });
+          
+          //监听行工具事件
+          table.on('tool(test)', function(obj){
+            let data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'disclosure'){     //公开
+                layer.confirm('真的要公开么', function(index){
+                    sendAjax1(Server.service.Operation, {
+                        'Type': 1,
+                        'id': data.ID,
+                        'value': 1
+                    }, 
+                    function(data) {
+                        if(data.success == 1) {
+                            layer.close(index);
+                            layer.msg(data.message);
+                            Indexes = sendAjax(Server.service.GetAllArchives, {
+                                'draw': 0,
+                                'start': 0,
+                                'length': 10000,
+                                'retrievalInfo': JSON.stringify(searchData)
+                            })
+                            table.reload('reload', {
+                                data: JSON.parse(Indexes.data)
+                            })
+                        }
+                    })
+                });
+            } else if(obj.event === 'noDisclosure') {  //不公开
+                layer.confirm('真的不公开么', function(index){
+                    sendAjax1(Server.service.Operation, {
+                        'Type': 1,
+                        'id': data.ID,
+                        'value': 0
+                    }, 
+                    function(data) {
+                        if(data.success == 1) {
+                            layer.close(index);
+                            layer.msg(data.message);
+                            Indexes = sendAjax(Server.service.GetAllArchives, {
+                                'draw': 0,
+                                'start': 0,
+                                'length': 10000,
+                                'retrievalInfo': JSON.stringify(searchData)
+                            })
+                            table.reload('reload', {
+                                data: JSON.parse(Indexes.data)
+                            })
+                        }
+                    })
+                });
+            }else if(obj.event === 'verification'){   //核销
+                layer.confirm('真的要核销么', function(index){
+                    sendAjax1(Server.service.Operation, {
+                        'Type': 2,
+                        'id': data.ID,
+                        'value': 0
+                    }, 
+                    function(data) {
+                        if(data.success == 1) {
+                            layer.close(index);
+                            layer.msg(data.message);
+                            Indexes = sendAjax(Server.service.GetAllArchives, {
+                                'draw': 0,
+                                'start': 0,
+                                'length': 10000,
+                                'retrievalInfo': JSON.stringify(searchData)
+                            })
+                            table.reload('reload', {
+                                data: JSON.parse(Indexes.data)
+                            })
+                        }
+                    })
+                });
+            }else if(obj.event === 'noVerification'){   //不核销
+                layer.confirm('真的不核销么', function(index){
+                  sendAjax1(Server.service.Operation, {
+                        'Type': 2,
+                        'id': data.ID,
+                        'value': 1
+                    }, 
+                    function(data) {
+                        if(data.success == 1) {
+                            layer.close(index);
+                            layer.msg(data.message);
+                            Indexes = sendAjax(Server.service.GetAllArchives, {
+                                'draw': 0,
+                                'start': 0,
+                                'length': 10000,
+                                'retrievalInfo': JSON.stringify(searchData)
+                            })
+                            table.reload('reload', {
+                                data: JSON.parse(Indexes.data)
+                            })
+                        }
+                    })
+                });
+            } else if(obj.event === 'details'){
+                let url = './recordList-detail.html?id='+ obj.data.ID;
+                x_admin_show('详情', url);
+            } else if(obj.event == 'del') {   //删除
+                layer.confirm('真的要删除么', function(index){
+                  sendAjax1(Server.service.Operation, {
+                        'Type': 0,
+                        'id': data.ID,
+                        'value': 0
+                    }, 
+                    function(data) {
+                        if(data.success == 1) {
+                            layer.msg(data.message);
+                            obj.del();
+                            layer.close(index);
+                        } else {
+                            layer.msg('删除失败');
+                        }
+                    })
+                });
+            }
+          });
+          
+          //全文检索监听提交
+          form.on('submit(fullTextSreach)', function(data){    //FullTextSearch
+              //console.log(data.field);
+              let text = data.field; 
+              text.draw = 0;
+              text.start = 0;
+              text.state = 1;
+              text.Province = '';
+              text.AwardYear = '';
+              text.length = 10000;
+              sendAjax2(Server.service.FullTextSearch, text, function(data) {
+                  $('#count').html(data.recordsTotal);
+                  table.reload('reload', {
+                    data: JSON.parse(data.data)
+                  })
+              });  
+              //console.log(fullText);
+              return false;
+          })
+
+
+          //检索监听提交
+          form.on('submit(sreach)', function(data){
+            //console.log(data.field);
+            checkboxList = data.field;
+            searchData = data.field;
+            searchData.State = 3;
+            searchData.ClassifyId = check($('#productType'));
+            searchData.AwardYear = check($('#ApplicationYear'));
+            searchData.AwardYear = check($('#obtainedYear'));
+            search = searchData;
+            //console.log(searchData);
+            Indexes = sendAjax(Server.service.GetAllArchives, {
+                'draw': 0,
+                'start': 0,
+                'length': 10000,
+                'retrievalInfo': JSON.stringify(searchData)
+            })
+            $('#count').html(Indexes.recordsTotal);
+            //console.log(JSON.parse(resetData.data));
+            //creact(resetData);  //生成折叠面板
+            //执行重载
+            table.reload('reload', {
+              data: JSON.parse(Indexes.data)
+            })
+            
+            //layui.element.init();
+            return false;
+          });
+
+          //勾选刷新列表
+          let loadingIndex;
+          $('#checkboxArea').on('click', function() {
+              loadingIndex = layer.load(2);  //显示加载层
+              let selectData = checkboxList;
+              selectData.State = 3;
+              selectData.ClassifyId = check($('#productType'));
+              selectData.AwardYear = check($('#ApplicationYear'));
+              search = selectData;
+              
+              sendAjax2(Server.service.GetAllArchives, {
+                  'draw': 0,
+                  'start': 0,
+                  'length': 10,
+                  'retrievalInfo': JSON.stringify(selectData)
+              }, function(resetData) {
+                  $('#count').html(resetData.recordsTotal);
+                  //执行重载
+                  table.reload('reload', {
+                    data: JSON.parse(resetData.data)
+                  })
+                  layer.close(loadingIndex);   //关闭加载层
+              })
+              
+         
+          });
+          
+
+        });
+        
+        //获取勾选值
+        function check(ele) {
+            let obtainedYearCheck = '';
+            ele.find('input').each(function(i){
+                if($(this).prop('checked')) {
+                    obtainedYearCheck += $(this).attr('name') + ','; 
+                }
+            });
+            obtainedYearCheck=obtainedYearCheck.substring(0,obtainedYearCheck.length-1)
+            return obtainedYearCheck;
+        }
+
+    </script>
+    
+
+
+  </body>
+
+</html>
